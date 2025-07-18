@@ -1,16 +1,19 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UtilsService } from 'src/shared/services/utils/utils.service';
+import { AuthGuard } from 'src/shared/guards/auth/auth.guard';
 
 @Controller('usuarios')
+@UseGuards(AuthGuard)
 export class UsuariosController {
 
     constructor(private usuarioSvc: UsuariosService, 
                 private utilSvc: UtilsService) { }
 
     @Get ()
-    listar(){
+   
+    listar() {
         return this.usuarioSvc.listar();
     }
     @Get ("clave")
@@ -34,8 +37,8 @@ export class UsuariosController {
     }
 
 
-    @Delete()
-    eliminar(){
-        return this.usuarioSvc.eliminar();
+    @Delete(':cveUsuario')
+    eliminar( @Param ('cveUsuario', ParseIntPipe) cveUsuario: number) {
+        return this.usuarioSvc.eliminar(cveUsuario);
     }
 }
